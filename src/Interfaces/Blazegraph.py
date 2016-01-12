@@ -98,3 +98,6 @@ class Blazegraph(AbstractClient):
             }
         """.format(subject, predicate, obj)
         return requests.post(self.server, params={"query": query})
+
+    def query(self, query):
+        return requests.post(self.server, params={"query": query})

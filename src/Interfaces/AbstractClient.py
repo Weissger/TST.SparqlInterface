@@ -37,6 +37,10 @@ class AbstractClient(object):
     def get_types(self, instance):
         pass
 
+    @abc.abstractmethod
+    def query(self, query):
+        pass
+
 
 class SparqlConnectionError(Exception):
     def __init__(self, value):
