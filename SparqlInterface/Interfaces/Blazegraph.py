@@ -1,10 +1,13 @@
-from .AbstractInterface import AbstractInterface, SparqlConnectionError
 import requests
+
+from .SparqlInterface.Interfaces.AbstractInterface import SparqlConnectionError
+from SparqlInterface.Interfaces import AbstractInterface
+
 
 __author__ = 'tmy'
 
 
-class BlazegraphInterface(AbstractInterface):
+class Blazegraph(AbstractInterface):
     def __init__(self, server):
         self.server = server
 
