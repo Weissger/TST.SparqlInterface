@@ -100,4 +100,4 @@ class Blazegraph(AbstractClient):
         return requests.post(self.server, params={"query": query})
 
     def query(self, query):
-        return requests.post(self.server, params={"query": query})
+        return requests.post(self.server, params={"query": query}).json()["results"]["bindings"]
