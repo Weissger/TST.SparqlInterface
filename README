@@ -2,7 +2,7 @@
  SparqlInterface
 =========================
 
-Small set of query methods for the TypeSimilarityToolSet
+TypeSimilarityToolSet: Simple client for sparql backends
 
 Authors
 =======

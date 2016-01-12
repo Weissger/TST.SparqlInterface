@@ -1,7 +1,7 @@
 import requests
 
 from .SparqlInterface.Interfaces.AbstractInterface import SparqlConnectionError
-from SparqlInterface.Interfaces import AbstractInterface
+from src.Interfaces import AbstractInterface
 
 
 __author__ = 'tmy'
