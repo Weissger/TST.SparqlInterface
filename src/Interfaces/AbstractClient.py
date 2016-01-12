@@ -10,19 +10,15 @@ class AbstractClient(object):
     metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def get_sub_class_of_subjects_distinct(self):
+    def get_sub_class_of_subjects(self):
         pass
 
     @abc.abstractmethod
-    def get_sub_class_of_objects_ppath(self, rdf_type):
+    def get_all_class_parents(self, rdf_type):
         pass
 
     @abc.abstractmethod
-    def get_sub_class_of_objects_recursive(self, rdf_type):
-        pass
-
-    @abc.abstractmethod
-    def get_sub_class_of_objects(self, rdf_type):
+    def get_class_parents(self, rdf_type):
         pass
 
     @abc.abstractmethod

@@ -6,10 +6,17 @@ from .AbstractClient import AbstractClient, SparqlConnectionError
 
 
 class Blazegraph(AbstractClient):
-    def __init__(self, server):
+    def __init__(self, server, property_paths=True):
         self.server = server
+        self.property_paths = property_paths
 
-    def get_sub_class_of_objects_recursive(self, rdf_type):
+    def get_all_class_parents(self, rdf_type):
+        if self.property_paths:
+            return self.__get_all_class_parents_ppath(rdf_type)
+        else:
+            return self.__get_all_class_parents_ppath(rdf_type)
+
+    def __get_all_class_parents_recursive(self, rdf_type):
         query = """SELECT ?class WHERE {{
           <{}> rdfs:subClassOf ?class
         }}""".replace('\n', '')
@@ -28,7 +35,7 @@ class Blazegraph(AbstractClient):
                     more.append(new_c)
         return done_list
 
-    def get_sub_class_of_objects_ppath(self, rdf_type):
+    def __get_all_class_parents_ppath(self, rdf_type):
         query = """SELECT distinct ?class WHERE {{
           <{}> rdfs:subClassOf+ ?class
         }}""".replace('\n', '')
@@ -69,7 +76,7 @@ class Blazegraph(AbstractClient):
                                  headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"][
             0]["count"]["value"])
 
-    def get_sub_class_of_objects(self, rdf_type):
+    def get_class_parents(self, rdf_type):
         query = """
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             SELECT *
