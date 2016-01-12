@@ -1,6 +1,6 @@
 __author__ = 'tmy'
 
-from Interfaces.Blazegraph import Blazegraph
+from .Interfaces.Blazegraph import Blazegraph
 
 URI_CLASS_MAP = {'blazegraph': Blazegraph}
 

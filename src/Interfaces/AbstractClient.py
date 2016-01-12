@@ -3,7 +3,7 @@ __author__ = 'tmy'
 import abc
 
 
-class AbstractInterface(object):
+class AbstractClient(object):
     """
     Abstract class to implement a remote sparql interface.
     """
