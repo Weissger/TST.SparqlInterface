@@ -6,11 +6,11 @@ from .AbstractClient import AbstractClient, SparqlConnectionError
 
 
 class Blazegraph(AbstractClient):
-    def __init__(self, server=None, user=None, password=None, property_paths=True):
+    def __init__(self, server=None, user=None, password=None, prop_path=True):
         self.server = server
         self.session = requests.Session()
         self.session.auth = (user, password)
-        self.property_paths = property_paths
+        self.property_paths = prop_path
 
     def get_all_class_parents(self, rdf_type):
         if self.property_paths:
