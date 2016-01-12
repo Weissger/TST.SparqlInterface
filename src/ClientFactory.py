@@ -5,10 +5,10 @@ from Interfaces.Blazegraph import Blazegraph
 URI_CLASS_MAP = {'blazegraph': Blazegraph}
 
 
-def make_client(server):
+def make_client(server, user, password):
     interface = [URI_CLASS_MAP[x] for x in URI_CLASS_MAP.keys() if x in server]
     if interface:
-        return interface[0](server)
+        return interface[0](server, user, password)
     else:
         raise UnknownService(server)
 
