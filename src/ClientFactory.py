@@ -2,7 +2,7 @@ __author__ = 'tmy'
 
 from .Interfaces.Blazegraph import Blazegraph
 
-URI_CLASS_MAP = {'blazegraph': Blazegraph}
+URI_CLASS_MAP = {'blazegraph': Blazegraph, 'bigdata': Blazegraph}
 
 
 def make_client(server=None, user=None, password=None, prop_path=None):
