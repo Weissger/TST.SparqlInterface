@@ -1,8 +1,9 @@
-__author__ = 'tmy'
-
 import requests
-
+import unirest
 from .AbstractClient import AbstractClient, SparqlConnectionError
+from .. import Queries, ResultParser
+
+__author__ = 'tmy'
 
 
 class Blazegraph(AbstractClient):
@@ -19,9 +20,7 @@ class Blazegraph(AbstractClient):
             return self.__get_all_class_parents_ppath(rdf_type)
 
     def __get_all_class_parents_recursive(self, rdf_type):
-        query = """SELECT ?class WHERE {{
-          <{}> rdfs:subClassOf ?class
-        }}""".replace('\n', '')
+        query = Queries.SUB_CLASS
         done_list = []
         more = [rdf_type]
         while True:
@@ -38,9 +37,7 @@ class Blazegraph(AbstractClient):
         return done_list
 
     def __get_all_class_parents_ppath(self, rdf_type):
-        query = """SELECT distinct ?class WHERE {{
-          <{}> rdfs:subClassOf+ ?class
-        }}""".replace('\n', '')
+        query = Queries.SUB_CLASS_PROPERTY_PATH
         done_list = []
         try:
             result = self.session.post(self.server, params={"query": query.format(rdf_type)},
@@ -58,55 +55,35 @@ class Blazegraph(AbstractClient):
         return done_list
 
     def get_types(self, instance):
-        query = """
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT ?type
-            WHERE { <""" + instance + """> rdf:type ?type}
-        """
-        return set([binding["type"]["value"] for binding in requests.post(self.server, params={"query": query},
-                                                                          headers={
-                                                                              "Accept": "application/sparql-results+json"}).json()[
-            "results"]["bindings"]])
+        query = Queries.TYPES
+        return ResultParser.parse_types(requests.post(self.server, params={"query": query.format(instance)},
+                                                      headers={"Accept": "application/sparql-results+json"}))
 
     def count_instances(self, rdf_type):
-        query = """
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT (COUNT(?instance) as ?count)
-            WHERE { ?instance rdf:type <""" + rdf_type + """> }
-        """
-        return int(requests.post(self.server, params={"query": query},
-                                 headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"][
-            0]["count"]["value"])
+        query = Queries.INSTANCE_COUNT
+        return ResultParser.parse_instance_count(requests.post(self.server, params={"query": query.format(rdf_type)},
+                                                               headers={"Accept": "application/sparql-results+json"}))
 
     def get_class_parents(self, rdf_type):
-        query = """
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            SELECT *
-            WHERE { <""" + rdf_type + """> rdfs:subClassOf ?class }
-        """
-        return set([binding["class"]["value"] for binding in requests.post(self.server, params={"query": query},
-                                                                           headers={
-                                                                               "Accept": "application/sparql-results+json"}).json()[
-            "results"]["bindings"]])
+        query = Queries.SUB_CLASS
+        return ResultParser.parse_types(
+            requests.post(self.server, params={"query": query.format(rdf_type)},
+                          headers={"Accept": "application/sparql-results+json"}))
 
     def count_shared_instances(self, rdf_type, other_type):
-        query = """
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT (COUNT(?instance) as ?count)
-            WHERE { ?instance rdf:type <""" + rdf_type + """>. ?instance rdf:type <""" + other_type + """>}
-        """
-        return int(requests.post(self.server, params={"query": query},
-                                 headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"][
-            0]["count"]["value"])
+        query = Queries.SHARED_INSTANCE_COUNT
+        return ResultParser.parse_instance_count(
+            requests.post(self.server, params={"query": query.format(rdf_type, other_type)},
+                          headers={"Accept": "application/sparql-results+json"}))
 
     def insert_triple(self, subject, predicate, obj):
-        query = """
-            INSERT DATA
-            {
-              {} {} {} .
-            }
-        """.format(subject, predicate, obj)
+        query = Queries.INSERTION.format(subject, predicate, obj)
         return requests.post(self.server, params={"query": query})
 
     def query(self, query):
-        return requests.post(self.server, params={"query": query}, headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"]
+        return requests.post(self.server, params={"query": query},
+                             headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"]
+
+    def async_query(self, query, callback):
+        return unirest.post(self.server, params={"query": query},
+                            headers={"Accept": "application/sparql-results+json"}, callback=callback)

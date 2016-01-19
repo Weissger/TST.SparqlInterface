@@ -10,10 +10,6 @@ class AbstractClient(object):
     metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def get_sub_class_of_subjects(self):
-        pass
-
-    @abc.abstractmethod
     def get_all_class_parents(self, rdf_type):
         pass
 
@@ -35,6 +31,10 @@ class AbstractClient(object):
 
     @abc.abstractmethod
     def query(self, query):
+        pass
+
+    @abc.abstractmethod
+    def async_query(self, query, callback):
         pass
 
 
