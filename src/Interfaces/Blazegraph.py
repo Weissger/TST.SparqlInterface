@@ -31,7 +31,7 @@ class Blazegraph(AbstractClient):
             result = self.session.post(self.server, params={"query": query.format(cur)},
                                        headers={"Accept": "application/sparql-results+json"}).json()
             for o in result["results"]["bindings"]:
-                new_c = o["class"]["value"]
+                new_c = o["type"]["value"]
                 if new_c not in done_list and new_c not in more:
                     more.append(new_c)
         return done_list
@@ -51,7 +51,7 @@ class Blazegraph(AbstractClient):
         else:
             raise (SparqlConnectionError(result))
         for o in result["results"]["bindings"]:
-            done_list.append(o["class"]["value"])
+            done_list.append(o["type"]["value"])
         return done_list
 
     def get_types(self, instance):
