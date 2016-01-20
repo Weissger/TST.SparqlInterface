@@ -33,9 +33,9 @@ class AbstractClient(object):
     def query(self, query):
         pass
 
-    @abc.abstractmethod
-    def async_query(self, query, callback):
-        pass
+    # @abc.abstractmethod
+    # def async_query(self, query, callback):
+    #     pass
 
 
 class SparqlConnectionError(Exception):

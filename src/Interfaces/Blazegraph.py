@@ -1,5 +1,5 @@
 import requests
-import unirest
+# import unirest
 from .AbstractClient import AbstractClient, SparqlConnectionError
 from .. import Queries, ResultParser
 
@@ -83,7 +83,7 @@ class Blazegraph(AbstractClient):
     def query(self, query):
         return requests.post(self.server, params={"query": query},
                              headers={"Accept": "application/sparql-results+json"}).json()["results"]["bindings"]
-
-    def async_query(self, query, callback):
-        return unirest.post(self.server, params={"query": query},
-                            headers={"Accept": "application/sparql-results+json"}, callback=callback)
+    #
+    # def async_query(self, query, callback):
+    #     return unirest.post(self.server, params={"query": query},
+    #                         headers={"Accept": "application/sparql-results+json"}, callback=callback)
